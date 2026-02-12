@@ -1,0 +1,37 @@
+{
+  "links": [
+    {
+      "id": "mlju96bs7mj5i27ej8",
+      "title": "Tipos de energía",
+      "subtitle": "Conoce los distintos tipos de energía que existen",
+      "url": "https://energia-accion-explora.base44.app",
+      "disciplina": "Ciencias II",
+      "trimestre": "II",
+      "order": 1,
+      "createdAt": 1770923713097
+    },
+    {
+      "id": "mljuaei15lcxysyfl2t",
+      "title": "Resta de expresiones algebraicas",
+      "subtitle": "Conoce la magia en la resta",
+      "url": "https://magic-math-undo.lovable.app",
+      "disciplina": "Matemáticas",
+      "trimestre": "II",
+      "order": 1,
+      "createdAt": 1770923770345
+    },
+    {
+      "id": "mljubywxd9w7wno2rkl",
+      "title": "Tarea 7",
+      "subtitle": "Evaluación  de esta de expresiones algebraicas",
+      "url": "https://magic-math-undo.lovable.app",
+      "disciplina": "Matemáticas",
+      "trimestre": "II",
+      "order": 0,
+      "createdAt": 1770923843458
+    }
+  ],
+  "settings": {
+    "defaultTrimestre": "II"
+  }
+}

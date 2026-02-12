@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursos Académicos - Matemáticas y Ciencias II</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0EA5E9',
+            ciencias: '#06B6D4',
+            matematicas: '#EC4899',
+            otros: '#F59E0B',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    .link-card { transition: all 0.25s ease; }
+    .link-card:hover { transform: translateY(-3px); }
+    .link-card-otros:hover { background: rgba(245,158,11,0.3) !important; }
+    .link-card-ciencias:hover { background: rgba(6,182,212,0.3) !important; }
+    .link-card-matematicas:hover { background: rgba(236,72,153,0.3) !important; }
+    .link-card-historial:hover { background: rgba(14,165,233,0.3) !important; }
+    .dragging { opacity: 0.5; }
+    .drag-over { border-color: #0EA5E9; background: rgba(14,165,233,0.15); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-slate-800 to-slate-900">
+  <div id="app" class="min-h-screen">
+    <!-- Vista Alumno -->
+    <div id="vista-alumno" class="pb-24">
+      <!-- Header -->
+      <header class="sticky top-0 z-40 bg-slate-800/90 backdrop-blur-md border-b border-slate-700/80">
+        <div class="max-w-xl mx-auto px-4 py-5">
+          <h1 class="text-xl md:text-2xl font-bold text-white text-center tracking-tight">Recursos Académicos</h1>
+          <p class="text-sm text-slate-400 text-center mt-0.5">Matemáticas · Ciencias II</p>
+          <div class="flex gap-2 mt-4 justify-center">
+            <select id="selector-trimestre" class="px-4 py-2.5 rounded-xl border border-slate-600 text-sm font-medium text-white bg-slate-700 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+              <option value="I">Trimestre I</option>
+              <option value="II">Trimestre II</option>
+              <option value="III">Trimestre III</option>
+            </select>
+            <button id="btn-historial" class="px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium text-sm transition-all border border-slate-600">
+              Historial
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-xl mx-auto px-4 py-8 space-y-10">
+        <!-- Otros Links (siempre visible) -->
+        <section id="seccion-otros">
+          <h2 class="text-sm font-semibold text-amber-400 uppercase tracking-wider mb-3">Otros Links</h2>
+          <div id="lista-otros" class="space-y-2"></div>
+        </section>
+
+        <!-- Ciencias II -->
+        <section>
+          <h2 class="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-3">Ciencias II</h2>
+          <div id="lista-ciencias" class="space-y-2"></div>
+        </section>
+
+        <!-- Matemáticas -->
+        <section>
+          <h2 class="text-sm font-semibold text-pink-400 uppercase tracking-wider mb-3">Matemáticas</h2>
+          <div id="lista-matematicas" class="space-y-2"></div>
+        </section>
+      </main>
+
+      <!-- Acceso Maestro -->
+      <div class="fixed bottom-5 right-5">
+        <button id="btn-maestro" class="w-12 h-12 rounded-full bg-slate-600 hover:bg-slate-500 text-white flex items-center justify-center text-lg transition-all shadow-lg hover:shadow-xl active:scale-95 border border-slate-500">
+          👤
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Historial -->
+    <div id="modal-historial" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-[fadeIn_0.3s_ease]">
+        <div class="p-5 border-b border-slate-700 flex justify-between items-center">
+          <h3 class="text-lg font-semibold text-white">Historial</h3>
+          <button id="cerrar-historial" class="p-2 hover:bg-slate-700 rounded-xl text-slate-400">✕</button>
+        </div>
+        <div class="p-5 space-y-4 overflow-y-auto flex-1">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">Disciplina</label>
+            <select id="historial-disciplina" class="w-full px-4 py-2.5 rounded-xl border border-slate-600 bg-slate-700 text-white focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="Ciencias II">Ciencias II</option>
+              <option value="Matemáticas">Matemáticas</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">Trimestre</label>
+            <select id="historial-trimestre" class="w-full px-4 py-2.5 rounded-xl border border-slate-600 bg-slate-700 text-white focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="I">Trimestre I</option>
+              <option value="II">Trimestre II</option>
+              <option value="III">Trimestre III</option>
+            </select>
+          </div>
+          <div id="lista-historial" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Login Maestro -->
+    <div id="modal-login" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 w-full max-w-sm p-6 animate-[fadeIn_0.3s_ease]">
+        <h3 class="text-lg font-semibold text-white mb-4">Acceso Docente</h3>
+        <input type="password" id="input-password" placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl border border-slate-600 bg-slate-700 text-white placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary mb-3">
+        <p id="login-error" class="text-rose-400 text-sm mb-2 hidden">Contraseña incorrecta</p>
+        <div class="flex gap-2">
+          <button id="btn-login" class="flex-1 py-3 rounded-xl bg-primary hover:bg-sky-500 text-white font-medium transition-all">Entrar</button>
+          <button id="btn-cerrar-login" class="px-4 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 font-medium text-slate-200 border border-slate-600">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Maestro -->
+    <div id="vista-maestro" class="hidden min-h-screen bg-neutral-50">
+      <header class="bg-white border-b border-neutral-100">
+        <div class="max-w-xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 class="text-lg font-semibold text-neutral-900">Panel del Docente</h1>
+          <button id="btn-salir" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-medium text-sm transition-all">Salir</button>
+        </div>
+      </header>
+
+      <main class="max-w-xl mx-auto px-4 py-6 space-y-6">
+        <!-- Exportar / Importar datos para compartir -->
+        <section class="bg-white rounded-2xl p-5 border border-neutral-100">
+          <h3 class="text-sm font-semibold text-neutral-900 mb-2">Compartir con alumnos</h3>
+          <p class="text-sm text-neutral-500 mb-3">Exporta <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs">datos.json</code> y súbelo junto a index.html en tu repo.</p>
+          <div class="flex gap-2 flex-wrap">
+            <button id="btn-exportar" class="px-4 py-2 rounded-xl bg-primary hover:bg-sky-600 text-white font-medium text-sm transition-all">Exportar datos.json</button>
+            <label class="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 font-medium text-sm cursor-pointer text-neutral-700">Importar <input type="file" id="input-importar" accept=".json" class="hidden"></label>
+          </div>
+        </section>
+
+        <!-- Config: Trimestre por defecto -->
+        <section class="bg-white rounded-2xl p-5 border border-neutral-100">
+          <h3 class="text-sm font-semibold text-neutral-900 mb-2">Trimestre por defecto</h3>
+          <p class="text-xs text-neutral-500 mb-3">Visible al iniciar la app</p>
+          <select id="default-trimestre" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary">
+            <option value="I">Trimestre I</option>
+            <option value="II">Trimestre II</option>
+            <option value="III">Trimestre III</option>
+          </select>
+        </section>
+
+        <!-- Formulario agregar link -->
+        <section class="bg-white rounded-2xl p-5 border border-neutral-100">
+          <h3 class="text-sm font-semibold text-neutral-900 mb-4">Agregar link</h3>
+          <div class="space-y-3">
+            <select id="form-disciplina" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary">
+              <option value="Ciencias II">Ciencias II</option>
+              <option value="Matemáticas">Matemáticas</option>
+              <option value="Otros Links">Otros Links</option>
+            </select>
+            <div id="form-trimestre-wrap" class="">
+              <label class="block text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1.5">Trimestre</label>
+              <select id="form-trimestre" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                <option value="I">Trimestre I</option>
+                <option value="II">Trimestre II</option>
+                <option value="III">Trimestre III</option>
+              </select>
+            </div>
+            <input type="text" id="form-titulo" placeholder="Título" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-neutral-400">
+            <input type="text" id="form-subtitulo" placeholder="Subtítulo" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-neutral-400">
+            <input type="url" id="form-url" placeholder="Enlace (https://...)" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-neutral-400">
+            <button id="btn-agregar" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-all">
+              Agregar Link
+            </button>
+          </div>
+        </section>
+
+        <!-- Links con drag & drop y eliminar -->
+        <section class="bg-white rounded-2xl p-5 border border-neutral-100">
+          <h3 class="text-sm font-semibold text-neutral-900 mb-2">Ordenar y gestionar</h3>
+          <p class="text-xs text-neutral-500 mb-4">Arrastra o usa ↑↓. Se muestran los primeros 5 por disciplina.</p>
+          <div class="flex gap-2 mb-4">
+            <select id="maestro-filtro" class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200">
+              <option value="Otros Links">Otros Links</option>
+              <option value="Ciencias II">Ciencias II</option>
+              <option value="Matemáticas">Matemáticas</option>
+            </select>
+            <div id="maestro-trimestre-wrap" class="flex-1 hidden">
+              <select id="maestro-trimestre" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200">
+                <option value="I">Trimestre I</option>
+                <option value="II">Trimestre II</option>
+                <option value="III">Trimestre III</option>
+              </select>
+            </div>
+          </div>
+          <div id="lista-maestro" class="space-y-2"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const PASSWORD = '2707';
+    const STORAGE_LINKS = 'linksAcademicos';
+    const STORAGE_SETTINGS = 'settingsAcademicos';
+
+    let links = [];
+    let settings = { defaultTrimestre: 'I' };
+
+    function loadData() {
+      try {
+        const l = localStorage.getItem(STORAGE_LINKS);
+        const s = localStorage.getItem(STORAGE_SETTINGS);
+        links = l ? JSON.parse(l) : [];
+        settings = s ? JSON.parse(s) : { defaultTrimestre: 'I' };
+      } catch (e) {
+        links = [];
+        settings = { defaultTrimestre: 'I' };
+      }
+    }
+
+    async function tryLoadFromJson() {
+      try {
+        const res = await fetch('./datos.json');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.links && Array.isArray(data.links)) {
+            links = data.links;
+            if (data.settings) settings = data.settings;
+            saveData();
+            return true;
+          }
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_LINKS, JSON.stringify(links));
+      localStorage.setItem(STORAGE_SETTINGS, JSON.stringify(settings));
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
+
+    function getLinksByDisciplinaYTrimestre(disciplina, trimestre) {
+      return links
+        .filter(l => l.disciplina === disciplina && (l.trimestre || '') === trimestre)
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    }
+
+    function getOtrosLinks() {
+      return links
+        .filter(l => l.disciplina === 'Otros Links')
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    }
+
+    function getTop5(disciplina, trimestre) {
+      return getLinksByDisciplinaYTrimestre(disciplina, trimestre).slice(0, 5);
+    }
+
+    function renderVistaAlumno() {
+      const trimestre = document.getElementById('selector-trimestre').value;
+      const otros = getOtrosLinks();
+      const ciencias = getTop5('Ciencias II', trimestre);
+      const matematicas = getTop5('Matemáticas', trimestre);
+
+      const renderLista = (arr, containerId, borderColor, hoverClass) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        if (arr.length === 0) {
+          container.innerHTML = '<p class="text-slate-500 text-sm py-6 text-center">No hay links en esta sección</p>';
+          return;
+        }
+        arr.forEach(link => {
+          const a = document.createElement('a');
+          a.href = link.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = `link-card ${hoverClass} block p-4 rounded-xl border border-slate-600 ${borderColor} bg-slate-700/60`;
+          a.innerHTML = `
+            <p class="font-semibold text-white">${escapeHtml(link.title)}</p>
+            ${link.subtitle ? `<p class="text-sm text-slate-400 mt-0.5">${escapeHtml(link.subtitle)}</p>` : ''}
+          `;
+          container.appendChild(a);
+        });
+      };
+
+      renderLista(otros, 'lista-otros', 'border-l-4 border-l-amber-500', 'link-card-otros');
+      renderLista(ciencias, 'lista-ciencias', 'border-l-4 border-l-cyan-400', 'link-card-ciencias');
+      renderLista(matematicas, 'lista-matematicas', 'border-l-4 border-l-pink-400', 'link-card-matematicas');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function renderHistorial() {
+      const disciplina = document.getElementById('historial-disciplina').value;
+      const trimestre = document.getElementById('historial-trimestre').value;
+      const container = document.getElementById('lista-historial');
+      container.innerHTML = '';
+
+      let arr;
+      if (disciplina === 'Ciencias II' || disciplina === 'Matemáticas') {
+        arr = getLinksByDisciplinaYTrimestre(disciplina, trimestre)
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      } else {
+        arr = [];
+      }
+
+      if (arr.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 py-6 text-center">No hay links</p>';
+        return;
+      }
+
+      arr.forEach(link => {
+        const a = document.createElement('a');
+        a.href = link.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'link-card link-card-historial block p-4 rounded-xl bg-slate-700/60 hover:bg-slate-600 border border-slate-600 border-l-4 border-l-primary';
+        a.innerHTML = `
+          <p class="font-semibold text-white">${escapeHtml(link.title)}</p>
+          <p class="text-sm text-slate-400 mt-0.5">${escapeHtml(link.subtitle || '')}</p>
+        `;
+        container.appendChild(a);
+      });
+    }
+
+    function toggleMaestroTrimestre() {
+      const filtro = document.getElementById('maestro-filtro').value;
+      const wrap = document.getElementById('maestro-trimestre-wrap');
+      wrap.classList.toggle('hidden', filtro === 'Otros Links');
+    }
+
+    function renderMaestroLista() {
+      const filtro = document.getElementById('maestro-filtro').value;
+      const container = document.getElementById('lista-maestro');
+      container.innerHTML = '';
+
+      let arr;
+      if (filtro === 'Otros Links') {
+        arr = getOtrosLinks();
+      } else {
+        const trimestre = document.getElementById('maestro-trimestre').value;
+        arr = getLinksByDisciplinaYTrimestre(filtro, trimestre);
+      }
+
+      arr.forEach((link, idx) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2 p-3 rounded-xl bg-neutral-50 border border-neutral-200 cursor-move';
+        div.draggable = true;
+        div.dataset.id = link.id;
+        div.innerHTML = `
+          <span class="text-neutral-400 select-none">⋮⋮</span>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-neutral-900 truncate">${escapeHtml(link.title)}</p>
+            <p class="text-xs text-neutral-500">${filtro !== 'Otros Links' ? `Trimestre ${link.trimestre} • ` : ''}${escapeHtml(link.subtitle || '')}</p>
+          </div>
+          <div class="flex gap-1">
+            <button class="btn-mover p-2 rounded-lg text-neutral-500 hover:bg-neutral-200" data-id="${link.id}" data-dir="-1" title="Subir">↑</button>
+            <button class="btn-mover p-2 rounded-lg text-neutral-500 hover:bg-neutral-200" data-id="${link.id}" data-dir="1" title="Bajar">↓</button>
+            <button class="btn-eliminar p-2 rounded-lg text-rose-500 hover:bg-rose-50" data-id="${link.id}">🗑️</button>
+          </div>
+        `;
+        container.appendChild(div);
+
+        div.querySelector('.btn-eliminar').addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm('¿Eliminar este link?')) {
+            links = links.filter(l => l.id !== link.id);
+            saveData();
+            renderMaestroLista();
+            renderVistaAlumno();
+          }
+        });
+        div.querySelectorAll('.btn-mover').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dir = parseInt(btn.dataset.dir, 10);
+            const idx = arr.findIndex(l => l.id === link.id);
+            const newIdx = idx + dir;
+            if (newIdx >= 0 && newIdx < arr.length) {
+              [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+              arr.forEach((l, i) => l.order = i);
+              saveData();
+              renderMaestroLista();
+              renderVistaAlumno();
+            }
+          });
+        });
+
+        div.addEventListener('dragstart', handleDragStart);
+        div.addEventListener('dragover', handleDragOver);
+        div.addEventListener('dragleave', (e) => e.currentTarget.classList.remove('drag-over'));
+        div.addEventListener('drop', handleDrop);
+        div.addEventListener('dragend', handleDragEnd);
+      });
+    }
+
+    let draggedEl = null;
+    function handleDragStart(e) {
+      draggedEl = e.currentTarget;
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', e.currentTarget.dataset.id);
+    }
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const target = e.currentTarget;
+      if (target !== draggedEl) target.classList.add('drag-over');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      const targetId = e.currentTarget.dataset.id;
+      const sourceId = e.dataTransfer.getData('text/plain');
+      if (!targetId || !sourceId || targetId === sourceId) return;
+
+      const filtro = document.getElementById('maestro-filtro').value;
+      let arr;
+      if (filtro === 'Otros Links') {
+        arr = getOtrosLinks();
+      } else {
+        const trimestre = document.getElementById('maestro-trimestre').value;
+        arr = getLinksByDisciplinaYTrimestre(filtro, trimestre);
+      }
+
+      const sourceIdx = arr.findIndex(l => l.id === sourceId);
+      const targetIdx = arr.findIndex(l => l.id === targetId);
+      if (sourceIdx === -1 || targetIdx === -1) return;
+
+      const [removed] = arr.splice(sourceIdx, 1);
+      arr.splice(targetIdx, 0, removed);
+      arr.forEach((l, i) => { l.order = i; });
+      saveData();
+      renderMaestroLista();
+      renderVistaAlumno();
+    }
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      draggedEl = null;
+    }
+
+    function toggleFormTrimestre() {
+      const disciplina = document.getElementById('form-disciplina').value;
+      const wrap = document.getElementById('form-trimestre-wrap');
+      wrap.classList.toggle('hidden', disciplina === 'Otros Links');
+    }
+
+    function init() {
+      loadData();
+      tryLoadFromJson().then(loaded => {
+        if (loaded) {
+          document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
+          document.getElementById('default-trimestre').value = settings.defaultTrimestre;
+          renderVistaAlumno();
+        }
+      });
+      document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
+      document.getElementById('default-trimestre').value = settings.defaultTrimestre;
+      document.getElementById('historial-disciplina').value = 'Ciencias II';
+      document.getElementById('historial-trimestre').value = settings.defaultTrimestre;
+      renderVistaAlumno();
+      toggleFormTrimestre();
+
+      document.getElementById('selector-trimestre').addEventListener('change', () => {
+        renderVistaAlumno();
+      });
+
+      document.getElementById('btn-historial').addEventListener('click', () => {
+        document.getElementById('modal-historial').classList.remove('hidden');
+        document.getElementById('modal-historial').classList.add('flex');
+        renderHistorial();
+      });
+
+      document.getElementById('cerrar-historial').addEventListener('click', () => {
+        document.getElementById('modal-historial').classList.add('hidden');
+        document.getElementById('modal-historial').classList.remove('flex');
+      });
+
+      document.getElementById('historial-disciplina').addEventListener('change', renderHistorial);
+      document.getElementById('historial-trimestre').addEventListener('change', renderHistorial);
+
+      document.getElementById('btn-maestro').addEventListener('click', () => {
+        document.getElementById('modal-login').classList.remove('hidden');
+        document.getElementById('modal-login').classList.add('flex');
+        document.getElementById('input-password').value = '';
+        document.getElementById('login-error').classList.add('hidden');
+      });
+
+      document.getElementById('btn-cerrar-login').addEventListener('click', () => {
+        document.getElementById('modal-login').classList.add('hidden');
+        document.getElementById('modal-login').classList.remove('flex');
+      });
+
+      document.getElementById('btn-login').addEventListener('click', () => {
+        const pwd = document.getElementById('input-password').value;
+        if (pwd === PASSWORD) {
+          document.getElementById('modal-login').classList.add('hidden');
+          document.getElementById('modal-login').classList.remove('flex');
+          document.getElementById('vista-alumno').classList.add('hidden');
+          document.getElementById('vista-maestro').classList.remove('hidden');
+          document.getElementById('default-trimestre').value = settings.defaultTrimestre;
+          renderMaestroLista();
+        } else {
+          document.getElementById('login-error').classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('input-password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('btn-login').click();
+      });
+
+      document.getElementById('btn-salir').addEventListener('click', () => {
+        document.getElementById('vista-maestro').classList.add('hidden');
+        document.getElementById('vista-alumno').classList.remove('hidden');
+        renderVistaAlumno();
+      });
+
+      document.getElementById('form-disciplina').addEventListener('change', toggleFormTrimestre);
+
+      document.getElementById('btn-agregar').addEventListener('click', () => {
+        const disciplina = document.getElementById('form-disciplina').value;
+        const titulo = document.getElementById('form-titulo').value.trim();
+        const subtitulo = document.getElementById('form-subtitulo').value.trim();
+        const url = document.getElementById('form-url').value.trim();
+
+        if (!titulo || !url) {
+          alert('Título y enlace son obligatorios');
+          return;
+        }
+
+        let arr;
+        if (disciplina === 'Otros Links') {
+          arr = getOtrosLinks();
+        } else {
+          const trimestre = document.getElementById('form-trimestre').value;
+          arr = getLinksByDisciplinaYTrimestre(disciplina, trimestre);
+        }
+
+        const order = arr.length;
+        const newLink = {
+          id: generateId(),
+          title: titulo,
+          subtitle: subtitulo,
+          url: url.startsWith('http') ? url : 'https://' + url,
+          disciplina,
+          trimestre: disciplina === 'Otros Links' ? null : document.getElementById('form-trimestre').value,
+          order,
+          createdAt: Date.now()
+        };
+
+        links.push(newLink);
+        saveData();
+        document.getElementById('form-titulo').value = '';
+        document.getElementById('form-subtitulo').value = '';
+        document.getElementById('form-url').value = '';
+        renderMaestroLista();
+        renderVistaAlumno();
+      });
+
+      document.getElementById('default-trimestre').addEventListener('change', () => {
+        settings.defaultTrimestre = document.getElementById('default-trimestre').value;
+        saveData();
+        document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
+        renderVistaAlumno();
+      });
+
+      document.getElementById('maestro-filtro').addEventListener('change', () => {
+        toggleMaestroTrimestre();
+        renderMaestroLista();
+      });
+      document.getElementById('maestro-trimestre').addEventListener('change', renderMaestroLista);
+      toggleMaestroTrimestre();
+
+      document.getElementById('btn-exportar').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify({ links, settings }, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'datos.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+      document.getElementById('input-importar').addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            const data = JSON.parse(r.result);
+            if (data.links) { links = data.links; }
+            if (data.settings) { settings = data.settings; }
+            saveData();
+            renderVistaAlumno();
+            renderMaestroLista();
+            alert('Datos importados correctamente');
+          } catch (_) { alert('Error al importar el archivo'); }
+        };
+        r.readAsText(f);
+        e.target.value = '';
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
