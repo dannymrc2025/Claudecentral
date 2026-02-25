@@ -49,6 +49,16 @@
       "trimestre": "II",
       "order": 1,
       "createdAt": 1771432413371
+    },
+    {
+      "id": "mm1gbz6qt6hort3l45",
+      "title": "Quiz Central",
+      "subtitle": "Presenta tu evaluacion",
+      "url": "https://quiz-builder-five-ruby.vercel.app",
+      "disciplina": "Otros Links",
+      "trimestre": null,
+      "order": 1,
+      "createdAt": 1771988720354
     }
   ],
   "settings": {
