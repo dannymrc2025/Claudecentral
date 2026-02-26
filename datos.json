@@ -17,7 +17,7 @@
       "url": "https://magic-math-undo.lovable.app",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 1,
+      "order": 3,
       "createdAt": 1770923770345
     },
     {
@@ -27,7 +27,7 @@
       "url": "https://magic-math-undo.lovable.app",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 0,
+      "order": 2,
       "createdAt": 1770923843458
     },
     {
@@ -59,6 +59,26 @@
       "trimestre": null,
       "order": 1,
       "createdAt": 1771988720354
+    },
+    {
+      "id": "mm3fsgjgjy1o4ucrn2q",
+      "title": "Tarea 8",
+      "subtitle": "Evaluación de expresiones algebraicas",
+      "url": "https://drive.google.com/file/d/1rTyc-WKewEzsKnhyagJdYw3tVk9am0vq/view?usp=sharing",
+      "disciplina": "Matemáticas",
+      "trimestre": "II",
+      "order": 0,
+      "createdAt": 1772108742076
+    },
+    {
+      "id": "mm3fu28ra44xjoqbg",
+      "title": "Multiplicación de expresiones algebraicas",
+      "subtitle": "Aprende a multiplicar momonios y polinomios",
+      "url": "https://algebra-express-f7b948a1.base44.app",
+      "disciplina": "Matemáticas",
+      "trimestre": "II",
+      "order": 1,
+      "createdAt": 1772108816859
     }
   ],
   "settings": {
