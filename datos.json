@@ -47,7 +47,7 @@
       "url": "https://drive.google.com/file/d/10wHkPBp2wmEr2jCrRabFHQiRMd9cJIz7/view?usp=share_link",
       "disciplina": "Ciencias II",
       "trimestre": "II",
-      "order": 1,
+      "order": 2,
       "createdAt": 1771432413371
     },
     {
@@ -79,6 +79,16 @@
       "trimestre": "II",
       "order": 1,
       "createdAt": 1772108816859
+    },
+    {
+      "id": "mm968e07t0netdcim58",
+      "title": "Infografías de Marzo I",
+      "subtitle": "Imprime tus infografías de lo próximos 2 temas",
+      "url": "https://drive.google.com/file/d/1Sx2j-YhWxORpLTbGAQa0kVVQJs2Q_IQH/view?usp=sharing",
+      "disciplina": "Ciencias II",
+      "trimestre": "II",
+      "order": 0,
+      "createdAt": 1772455486183
     }
   ],
   "settings": {
