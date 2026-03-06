@@ -17,7 +17,7 @@
       "url": "https://magic-math-undo.lovable.app",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 3,
+      "order": 4,
       "createdAt": 1770923770345
     },
     {
@@ -27,7 +27,7 @@
       "url": "https://magic-math-undo.lovable.app",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 2,
+      "order": 3,
       "createdAt": 1770923843458
     },
     {
@@ -67,7 +67,7 @@
       "url": "https://drive.google.com/file/d/1rTyc-WKewEzsKnhyagJdYw3tVk9am0vq/view?usp=sharing",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 0,
+      "order": 1,
       "createdAt": 1772108742076
     },
     {
@@ -77,7 +77,7 @@
       "url": "https://algebra-express-f7b948a1.base44.app",
       "disciplina": "Matemáticas",
       "trimestre": "II",
-      "order": 1,
+      "order": 2,
       "createdAt": 1772108816859
     },
     {
@@ -89,6 +89,16 @@
       "trimestre": "II",
       "order": 0,
       "createdAt": 1772455486183
+    },
+    {
+      "id": "mmezdie3fabjhn3r8w9",
+      "title": "Tarea 9",
+      "subtitle": "Evaluación de División de expresiones algebraicas",
+      "url": "https://drive.google.com/file/d/1QJ6niVZOl8Xl7lLspP1KfG4HffrQXNVz/view?usp=sharing",
+      "disciplina": "Matemáticas",
+      "trimestre": "II",
+      "order": 0,
+      "createdAt": 1772806764891
     }
   ],
   "settings": {
