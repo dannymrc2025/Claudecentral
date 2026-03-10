@@ -99,6 +99,16 @@
       "trimestre": "II",
       "order": 0,
       "createdAt": 1772806764891
+    },
+    {
+      "id": "mmkueyw151daw6rxkqi",
+      "title": "Escape Room Central",
+      "subtitle": "Hora de jugar!!",
+      "url": "https://escape-room-builder.vercel.app/jugar",
+      "disciplina": "Otros Links",
+      "trimestre": null,
+      "order": 2,
+      "createdAt": 1773161231905
     }
   ],
   "settings": {
