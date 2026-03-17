@@ -109,9 +109,19 @@
       "trimestre": null,
       "order": 2,
       "createdAt": 1773161231905
+    },
+    {
+      "id": "mmuigvk9xpvg5mkx4o9",
+      "title": "Tarea 1",
+      "subtitle": "Evaluación de partes de la circunferencia",
+      "url": "https://drive.google.com/file/d/1sss2Ui-RcPJTnEgoo5utOUXun16RAmbC/view?usp=sharing",
+      "disciplina": "Matemáticas",
+      "trimestre": "III",
+      "order": 0,
+      "createdAt": 1773745827273
     }
   ],
   "settings": {
-    "defaultTrimestre": "II"
+    "defaultTrimestre": "III"
   }
 }
