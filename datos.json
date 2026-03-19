@@ -119,6 +119,16 @@
       "trimestre": "III",
       "order": 0,
       "createdAt": 1773745827273
+    },
+    {
+      "id": "mmxh2jreow16x33qlsk",
+      "title": "Tarea 2",
+      "subtitle": "Aprendamos sobre el número Pi",
+      "url": "https://drive.google.com/file/d/1Z2dENKWAjVv3giAaDiT8_3-ei0iPmsTb/view?usp=sharing",
+      "disciplina": "Matemáticas",
+      "trimestre": "III",
+      "order": 1,
+      "createdAt": 1773924877706
     }
   ],
   "settings": {
