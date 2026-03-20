@@ -151,13 +151,13 @@
       </header>
 
       <main class="max-w-xl mx-auto px-4 py-6 space-y-6">
-        <!-- Exportar / Importar datos para compartir -->
+        <!-- Sincronización en línea -->
         <section class="bg-white rounded-2xl p-5 border border-neutral-100">
-          <h3 class="text-sm font-semibold text-neutral-900 mb-2">Compartir con alumnos</h3>
-          <p class="text-sm text-neutral-500 mb-3">Exporta <code class="bg-neutral-100 px-1.5 py-0.5 rounded text-xs">datos.json</code> y súbelo junto a index.html en tu repo.</p>
-          <div class="flex gap-2 flex-wrap">
-            <button id="btn-exportar" class="px-4 py-2 rounded-xl bg-primary hover:bg-sky-600 text-white font-medium text-sm transition-all">Exportar datos.json</button>
-            <label class="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 font-medium text-sm cursor-pointer text-neutral-700">Importar <input type="file" id="input-importar" accept=".json" class="hidden"></label>
+          <h3 class="text-sm font-semibold text-neutral-900 mb-2">Base de datos en línea</h3>
+          <p class="text-sm text-neutral-500 mb-3">Los cambios se guardan automáticamente en Supabase. Tus alumnos verán los datos actualizados al instante.</p>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
+            <span class="text-sm text-emerald-600 font-medium">Conectado a Supabase</span>
           </div>
         </section>
 
@@ -222,45 +222,81 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = 'https://afmgjrwthwohycxfwvik.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmbWdqcnd0aHdvaHljeGZ3dmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNjQsImV4cCI6MjA4OTU5NzE2NH0.qW2k-dFmfBZzYQAT2sIRZvCZoXWdaHDiy1lqhWol9SM';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const PASSWORD = '2707';
-    const STORAGE_LINKS = 'linksAcademicos';
-    const STORAGE_SETTINGS = 'settingsAcademicos';
 
     let links = [];
-    let settings = { defaultTrimestre: 'I' };
+    let settings = { defaultTrimestre: 'II' };
+    let isSaving = false;
 
-    function loadData() {
-      try {
-        const l = localStorage.getItem(STORAGE_LINKS);
-        const s = localStorage.getItem(STORAGE_SETTINGS);
-        links = l ? JSON.parse(l) : [];
-        settings = s ? JSON.parse(s) : { defaultTrimestre: 'I' };
-      } catch (e) {
-        links = [];
-        settings = { defaultTrimestre: 'I' };
+    function showToast(msg, isError = false) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.className = `fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl text-sm font-medium shadow-lg z-[999] transition-all ${isError ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    async function loadData() {
+      const [linksRes, settingsRes] = await Promise.all([
+        db.from('links').select('*').order('order', { ascending: true }),
+        db.from('settings').select('*').eq('id', 1).single()
+      ]);
+      if (linksRes.error) { console.error(linksRes.error); return; }
+      if (settingsRes.error) { console.error(settingsRes.error); return; }
+      links = (linksRes.data || []).map(r => ({
+        id: r.id,
+        title: r.title,
+        subtitle: r.subtitle,
+        url: r.url,
+        disciplina: r.disciplina,
+        trimestre: r.trimestre,
+        order: r.order,
+        createdAt: r.created_at
+      }));
+      if (settingsRes.data) {
+        settings.defaultTrimestre = settingsRes.data.default_trimestre || 'II';
       }
     }
 
-    async function tryLoadFromJson() {
-      try {
-        const res = await fetch('./datos.json');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.links && Array.isArray(data.links)) {
-            links = data.links;
-            if (data.settings) settings = data.settings;
-            saveData();
-            return true;
-          }
-        }
-      } catch (_) {}
-      return false;
+    async function saveLink(link) {
+      const row = {
+        id: link.id,
+        title: link.title,
+        subtitle: link.subtitle || null,
+        url: link.url,
+        disciplina: link.disciplina,
+        trimestre: link.trimestre || null,
+        order: link.order,
+        created_at: link.createdAt
+      };
+      const { error } = await db.from('links').upsert(row);
+      if (error) { showToast('Error al guardar', true); console.error(error); }
     }
 
-    function saveData() {
-      localStorage.setItem(STORAGE_LINKS, JSON.stringify(links));
-      localStorage.setItem(STORAGE_SETTINGS, JSON.stringify(settings));
+    async function deleteLink(id) {
+      const { error } = await db.from('links').delete().eq('id', id);
+      if (error) { showToast('Error al eliminar', true); console.error(error); }
+    }
+
+    async function saveSetting(trimestre) {
+      const { error } = await db.from('settings').upsert({ id: 1, default_trimestre: trimestre });
+      if (error) { showToast('Error al guardar ajuste', true); console.error(error); }
+    }
+
+    async function saveOrderBatch(arr) {
+      const rows = arr.map(l => ({
+        id: l.id, title: l.title, subtitle: l.subtitle || null,
+        url: l.url, disciplina: l.disciplina, trimestre: l.trimestre || null,
+        order: l.order, created_at: l.createdAt
+      }));
+      const { error } = await db.from('links').upsert(rows);
+      if (error) { showToast('Error al reordenar', true); console.error(error); }
     }
 
     function generateId() {
@@ -393,13 +429,14 @@
         `;
         container.appendChild(div);
 
-        div.querySelector('.btn-eliminar').addEventListener('click', (e) => {
+        div.querySelector('.btn-eliminar').addEventListener('click', async (e) => {
           e.stopPropagation();
           if (confirm('¿Eliminar este link?')) {
+            await deleteLink(link.id);
             links = links.filter(l => l.id !== link.id);
-            saveData();
             renderMaestroLista();
             renderVistaAlumno();
+            showToast('Link eliminado');
           }
         });
         div.querySelector('.btn-editar').addEventListener('click', (e) => {
@@ -412,7 +449,7 @@
           document.getElementById('modal-editar').classList.add('flex');
         });
         div.querySelectorAll('.btn-mover').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          btn.addEventListener('click', async (e) => {
             e.stopPropagation();
             const dir = parseInt(btn.dataset.dir, 10);
             const idx = arr.findIndex(l => l.id === link.id);
@@ -420,7 +457,7 @@
             if (newIdx >= 0 && newIdx < arr.length) {
               [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
               arr.forEach((l, i) => l.order = i);
-              saveData();
+              await saveOrderBatch(arr);
               renderMaestroLista();
               renderVistaAlumno();
             }
@@ -448,7 +485,7 @@
       const target = e.currentTarget;
       if (target !== draggedEl) target.classList.add('drag-over');
     }
-    function handleDrop(e) {
+    async function handleDrop(e) {
       e.preventDefault();
       e.currentTarget.classList.remove('drag-over');
       const targetId = e.currentTarget.dataset.id;
@@ -471,7 +508,7 @@
       const [removed] = arr.splice(sourceIdx, 1);
       arr.splice(targetIdx, 0, removed);
       arr.forEach((l, i) => { l.order = i; });
-      saveData();
+      await saveOrderBatch(arr);
       renderMaestroLista();
       renderVistaAlumno();
     }
@@ -487,15 +524,14 @@
       wrap.classList.toggle('hidden', disciplina === 'Otros Links');
     }
 
-    function init() {
-      loadData();
-      tryLoadFromJson().then(loaded => {
-        if (loaded) {
-          document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
-          document.getElementById('default-trimestre').value = settings.defaultTrimestre;
-          renderVistaAlumno();
-        }
-      });
+    async function init() {
+      // Mostrar indicador de carga
+      document.getElementById('lista-ciencias').innerHTML = '<p class="text-slate-500 text-sm py-6 text-center">Cargando...</p>';
+      document.getElementById('lista-matematicas').innerHTML = '<p class="text-slate-500 text-sm py-6 text-center">Cargando...</p>';
+      document.getElementById('lista-otros').innerHTML = '<p class="text-slate-500 text-sm py-6 text-center">Cargando...</p>';
+
+      await loadData();
+
       document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
       document.getElementById('default-trimestre').value = settings.defaultTrimestre;
       document.getElementById('historial-disciplina').value = 'Ciencias II';
@@ -560,7 +596,7 @@
         if (e.key === 'Enter') document.getElementById('btn-guardar-edicion').click();
       });
 
-      document.getElementById('btn-guardar-edicion').addEventListener('click', () => {
+      document.getElementById('btn-guardar-edicion').addEventListener('click', async () => {
         const id = document.getElementById('edit-link-id').value;
         const titulo = document.getElementById('edit-titulo').value.trim();
         const url = document.getElementById('edit-url').value.trim();
@@ -573,11 +609,12 @@
           link.title = titulo;
           link.subtitle = document.getElementById('edit-subtitulo').value.trim();
           link.url = url.startsWith('http') ? url : 'https://' + url;
-          saveData();
+          await saveLink(link);
           renderMaestroLista();
           renderVistaAlumno();
           document.getElementById('modal-editar').classList.add('hidden');
           document.getElementById('modal-editar').classList.remove('flex');
+          showToast('Link actualizado');
         }
       });
 
@@ -589,7 +626,7 @@
 
       document.getElementById('form-disciplina').addEventListener('change', toggleFormTrimestre);
 
-      document.getElementById('btn-agregar').addEventListener('click', () => {
+      document.getElementById('btn-agregar').addEventListener('click', async () => {
         const disciplina = document.getElementById('form-disciplina').value;
         const titulo = document.getElementById('form-titulo').value.trim();
         const subtitulo = document.getElementById('form-subtitulo').value.trim();
@@ -621,19 +658,21 @@
         };
 
         links.push(newLink);
-        saveData();
+        await saveLink(newLink);
         document.getElementById('form-titulo').value = '';
         document.getElementById('form-subtitulo').value = '';
         document.getElementById('form-url').value = '';
         renderMaestroLista();
         renderVistaAlumno();
+        showToast('Link agregado');
       });
 
-      document.getElementById('default-trimestre').addEventListener('change', () => {
+      document.getElementById('default-trimestre').addEventListener('change', async () => {
         settings.defaultTrimestre = document.getElementById('default-trimestre').value;
-        saveData();
+        await saveSetting(settings.defaultTrimestre);
         document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
         renderVistaAlumno();
+        showToast('Trimestre por defecto guardado');
       });
 
       document.getElementById('maestro-filtro').addEventListener('change', () => {
@@ -643,32 +682,6 @@
       document.getElementById('maestro-trimestre').addEventListener('change', renderMaestroLista);
       toggleMaestroTrimestre();
 
-      document.getElementById('btn-exportar').addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify({ links, settings }, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'datos.json';
-        a.click();
-        URL.revokeObjectURL(a.href);
-      });
-      document.getElementById('input-importar').addEventListener('change', (e) => {
-        const f = e.target.files[0];
-        if (!f) return;
-        const r = new FileReader();
-        r.onload = () => {
-          try {
-            const data = JSON.parse(r.result);
-            if (data.links) { links = data.links; }
-            if (data.settings) { settings = data.settings; }
-            saveData();
-            renderVistaAlumno();
-            renderMaestroLista();
-            alert('Datos importados correctamente');
-          } catch (_) { alert('Error al importar el archivo'); }
-        };
-        r.readAsText(f);
-        e.target.value = '';
-      });
     }
 
     document.addEventListener('DOMContentLoaded', init);
