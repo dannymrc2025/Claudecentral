@@ -82,21 +82,21 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-slate-800 to-slate-900">
+<body class="min-h-screen" style="background: #EAF2F7;">
   <div id="app" class="min-h-screen">
     <!-- Vista Alumno -->
     <div id="vista-alumno" class="pb-12">
       <!-- Header -->
-      <header class="sticky top-0 z-40 bg-slate-800/95 backdrop-blur-md border-b border-slate-700/80">
+      <header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background: rgba(255,255,255,0.96); border-color: #C7DDE4;">
         <div class="max-w-6xl mx-auto px-4 md:px-8 py-4">
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <!-- Título -->
-            <div class="flex-1 min-w-0">
-              <h1 class="text-lg md:text-2xl font-bold text-white tracking-tight truncate">Links Central</h1>
-              <p class="text-xs md:text-sm text-slate-400">Prof. Daniel Esquivel Yeh</p>
+            <div class="w-full min-w-0 sm:flex-1">
+              <h1 class="text-lg md:text-2xl font-bold tracking-tight" style="color: #17324D;">Links Central</h1>
+              <p class="text-xs md:text-sm" style="color: #5D7185;">Prof. Daniel Esquivel Yeh</p>
             </div>
             <!-- Controles -->
-            <div class="flex items-center gap-2">
+            <div class="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-normal">
               <select id="selector-trimestre" class="px-3 py-2 md:px-4 md:py-2.5 rounded-xl border border-slate-600 text-sm font-medium text-white bg-slate-700 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                 <option value="I">Trim. I</option>
                 <option value="II">Trim. II</option>
@@ -412,13 +412,14 @@
           a.href = link.url;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
-          a.className = `link-card ${hoverClass} flex items-center gap-3 p-4 rounded-2xl border border-slate-600/80 ${borderColor} bg-slate-700/60 min-h-[64px]`;
+          a.className = `link-card ${hoverClass} flex items-center gap-3 p-4 rounded-2xl border ${borderColor} min-h-[64px]`;
+          a.style.cssText = 'background: #FFFFFF; border-color: #C7DDE4; box-shadow: 0 4px 12px rgba(23,50,77,0.06);';
           a.innerHTML = `
             <div class="flex-1 min-w-0">
-              <p class="font-semibold text-white text-base leading-snug">${escapeHtml(link.title)}</p>
-              ${link.subtitle ? `<p class="text-sm text-slate-400 mt-0.5 leading-snug">${escapeHtml(link.subtitle)}</p>` : ''}
+              <p class="font-semibold text-base leading-snug" style="color: #17324D;">${escapeHtml(link.title)}</p>
+              ${link.subtitle ? `<p class="text-sm mt-0.5 leading-snug" style="color: #5D7185;">${escapeHtml(link.subtitle)}</p>` : ''}
             </div>
-            <span class="text-slate-500 text-lg flex-shrink-0">→</span>
+            <span class="text-lg flex-shrink-0" style="color: #7890A1;">→</span>
           `;
           container.appendChild(a);
         });
