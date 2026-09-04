@@ -267,6 +267,27 @@
           </select>
         </section>
 
+        <!-- Config: Splash screen -->
+        <section class="bg-white rounded-2xl p-5 border border-neutral-100">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-sm font-semibold text-neutral-900 mb-1">Splash screen</h3>
+              <p class="text-xs text-neutral-500">Controla la pantalla de bienvenida y su mensaje.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="splash-activo" class="sr-only peer">
+              <span class="w-11 h-6 bg-neutral-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors"></span>
+              <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></span>
+              <span class="sr-only">Activar splash screen</span>
+            </label>
+          </div>
+          <div class="mt-4">
+            <label for="splash-mensaje" class="block text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1.5">Mensaje</label>
+            <textarea id="splash-mensaje" rows="3" maxlength="240" placeholder="Mensaje de bienvenida" class="w-full px-4 py-2.5 rounded-xl border border-neutral-200 resize-y focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-neutral-400"></textarea>
+            <button id="btn-guardar-splash" class="w-full mt-3 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-all">Guardar splash</button>
+          </div>
+        </section>
+
         <!-- Formulario agregar link -->
         <section class="bg-white rounded-2xl p-5 border border-neutral-100">
           <h3 class="text-sm font-semibold text-neutral-900 mb-4">Agregar link</h3>
@@ -338,7 +359,11 @@
     const PASSWORD = '2707';
 
     let links = [];
-    let settings = { defaultTrimestre: 'II' };
+    let settings = {
+      defaultTrimestre: 'II',
+      splashEnabled: true,
+      splashMessage: 'Este fin de semana es de exámenes diagnósticos en linea, no olvides presentar el tuyo'
+    };
     let isSaving = false;
 
     function showToast(msg, isError = false) {
@@ -368,6 +393,8 @@
       }));
       if (settingsRes.data) {
         settings.defaultTrimestre = settingsRes.data.default_trimestre || 'II';
+        settings.splashEnabled = settingsRes.data.splash_enabled !== false;
+        settings.splashMessage = settingsRes.data.splash_message || settings.splashMessage;
       }
     }
 
@@ -391,9 +418,23 @@
       if (error) { showToast('Error al eliminar', true); console.error(error); }
     }
 
-    async function saveSetting(trimestre) {
-      const { error } = await db.from('settings').upsert({ id: 1, default_trimestre: trimestre });
+    async function saveSetting() {
+      const { error } = await db.from('settings').upsert({
+        id: 1,
+        default_trimestre: settings.defaultTrimestre,
+        splash_enabled: settings.splashEnabled,
+        splash_message: settings.splashMessage
+      });
       if (error) { showToast('Error al guardar ajuste', true); console.error(error); }
+    }
+
+    function renderSplash() {
+      const splash = document.getElementById('splash-bienvenida');
+      if (!settings.splashEnabled) {
+        splash.remove();
+        return;
+      }
+      document.querySelector('#splash-bienvenida p:last-of-type').textContent = settings.splashMessage;
     }
 
     async function saveOrderBatch(arr) {
@@ -646,8 +687,11 @@
 
       await loadData();
 
+      renderSplash();
       document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
       document.getElementById('default-trimestre').value = settings.defaultTrimestre;
+      document.getElementById('splash-activo').checked = settings.splashEnabled;
+      document.getElementById('splash-mensaje').value = settings.splashMessage;
       document.getElementById('form-trimestre').value = settings.defaultTrimestre;
       document.getElementById('historial-disciplina').value = 'Ciencias II';
       document.getElementById('historial-trimestre').value = settings.defaultTrimestre;
@@ -660,10 +704,11 @@
 
       const cerrarSplash = () => {
         const splash = document.getElementById('splash-bienvenida');
+        if (!splash) return;
         splash.classList.add('is-hidden');
         setTimeout(() => splash.remove(), 400);
       };
-      document.getElementById('btn-entrar-sitio').addEventListener('click', cerrarSplash);
+      document.getElementById('btn-entrar-sitio')?.addEventListener('click', cerrarSplash);
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' || event.key === 'Enter') {
           const splash = document.getElementById('splash-bienvenida');
@@ -800,11 +845,18 @@
 
       document.getElementById('default-trimestre').addEventListener('change', async () => {
         settings.defaultTrimestre = document.getElementById('default-trimestre').value;
-        await saveSetting(settings.defaultTrimestre);
+        await saveSetting();
         document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
         document.getElementById('form-trimestre').value = settings.defaultTrimestre;
         renderVistaAlumno();
         showToast('Trimestre por defecto guardado');
+      });
+
+      document.getElementById('btn-guardar-splash').addEventListener('click', async () => {
+        settings.splashEnabled = document.getElementById('splash-activo').checked;
+        settings.splashMessage = document.getElementById('splash-mensaje').value.trim() || 'Bienvenidos';
+        await saveSetting();
+        showToast('Splash guardado');
       });
 
       document.getElementById('maestro-filtro').addEventListener('change', () => {

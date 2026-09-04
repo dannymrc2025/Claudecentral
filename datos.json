@@ -132,6 +132,8 @@
     }
   ],
   "settings": {
-    "defaultTrimestre": "III"
+    "defaultTrimestre": "III",
+    "splashEnabled": true,
+    "splashMessage": "Este fin de semana es de exámenes diagnósticos en linea, no olvides presentar el tuyo"
   }
 }
