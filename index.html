@@ -31,8 +31,10 @@
       --math: #DD5A45;
       --general: #C58A12;
     }
+    html, body { overflow-x: hidden; }
     body { font-family: 'DM Sans', sans-serif; background: #F1F7F8; }
-    .link-card { transition: all 0.2s ease; }
+    .link-card { min-width: 0; overflow: hidden; transition: all 0.2s ease; }
+    .link-card p { overflow-wrap: anywhere; }
     .link-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     .link-card:active { transform: scale(0.98); }
     .link-card-otros:hover { background: #FFF7E2 !important; }
@@ -143,7 +145,8 @@
     .drag-over { border-color: var(--science); background: rgba(46,196,182,0.15); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @media (min-width: 768px) {
-      .section-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: start; }
+      .section-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; align-items: start; }
+      .section-grid > section { min-width: 0; }
     }
   </style>
 </head>
