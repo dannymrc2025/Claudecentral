@@ -10,10 +10,10 @@
       theme: {
         extend: {
           colors: {
-            primary: '#2EC4B6',
-            ciencias: '#2EC4B6',
-            matematicas: '#FF6B6B',
-            otros: '#FFD166',
+            primary: '#118C7E',
+            ciencias: '#118C7E',
+            matematicas: '#DD5A45',
+            otros: '#C58A12',
           }
         }
       }
@@ -31,7 +31,7 @@
       --math: #DD5A45;
       --general: #C58A12;
     }
-    body { font-family: 'DM Sans', sans-serif; background: #EAF2F7; }
+    body { font-family: 'DM Sans', sans-serif; background: #F1F7F8; }
     .link-card { transition: all 0.2s ease; }
     .link-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     .link-card:active { transform: scale(0.98); }
@@ -54,7 +54,7 @@
     .bg-amber-400 { background-color: var(--general) !important; }
     .text-amber-400 { color: var(--general) !important; }
     .border-l-amber-500 { border-left-color: var(--general) !important; }
-    body.bg-gradient-to-b { background: #EAF2F7 !important; background-image: none !important; }
+    body.bg-gradient-to-b { background: #F1F7F8 !important; background-image: none !important; }
     #vista-alumno { color: var(--ink); }
     #vista-alumno header { background: rgba(255,255,255,0.96) !important; border-color: #C7DDE4 !important; }
     #vista-alumno .text-white, #vista-alumno .text-slate-200, #vista-alumno .text-slate-300 { color: var(--ink) !important; }
@@ -74,6 +74,60 @@
     #vista-maestro .text-neutral-500 { color: #527287 !important; }
     #vista-maestro .bg-neutral-50 { background-color: #F2F8F8 !important; }
     #vista-maestro .hover\:bg-neutral-100:hover, #vista-maestro .hover\:bg-neutral-200:hover { background-color: #DCECEE !important; }
+    #modal-historial > div { background: #FFFFFF !important; border-color: #C7DDE4 !important; }
+    #modal-historial .border-b { border-color: #C7DDE4 !important; }
+    #modal-historial h3 { color: var(--ink) !important; }
+    #modal-historial select { background: #FFFFFF !important; color: var(--ink) !important; border-color: #C7DDE4 !important; }
+    #modal-historial .text-white { color: var(--ink) !important; }
+    #modal-historial .text-slate-400 { color: var(--muted) !important; }
+    #modal-historial .text-slate-500 { color: #527287 !important; }
+    #modal-historial .link-card { background: #FFFFFF !important; border-color: #C7DDE4 !important; box-shadow: 0 4px 12px rgba(23,50,77,0.06); }
+    #modal-historial .link-card:hover { box-shadow: 0 10px 24px rgba(23,50,77,0.12); }
+    .header-controls {
+      display: grid;
+      grid-template-columns: minmax(8rem, 1fr) auto auto;
+      gap: 0.625rem;
+      align-items: center;
+    }
+    .top-select,
+    .top-action {
+      min-height: 2.75rem;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .top-select {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      background: #E6F4F1 !important;
+      color: var(--ink) !important;
+      border: 1px solid #A9D8CF !important;
+    }
+    .top-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.625rem 1rem;
+      color: #FFFFFF !important;
+      border: 1px solid transparent !important;
+      box-shadow: 0 4px 10px rgba(23,50,77,0.1);
+      white-space: nowrap;
+    }
+    .top-action:hover { transform: translateY(-1px); box-shadow: 0 7px 16px rgba(23,50,77,0.16); }
+    .top-action:active { transform: translateY(0); }
+    .top-action:focus-visible,
+    .top-select:focus-visible { outline: 3px solid rgba(17,140,126,0.3); outline-offset: 2px; }
+    .top-action--history { background: var(--science) !important; }
+    .top-action--history:hover { background: #0B7469 !important; }
+    .top-action--teacher { background: var(--math) !important; }
+    .top-action--teacher:hover { background: #B94332 !important; }
+    @media (max-width: 640px) {
+      .header-controls { grid-template-columns: 1fr 1fr; width: 100%; }
+      .top-select { grid-column: 1 / -1; }
+      .top-action { width: 100%; padding-inline: 0.75rem; }
+    }
     #splash-bienvenida {
       background: linear-gradient(135deg, #17324D 0%, #234A68 100%);
       transition: opacity 0.35s ease, visibility 0.35s ease;
@@ -128,18 +182,17 @@
               <p class="text-xs md:text-sm" style="color: #5D7185;">Prof. Daniel Esquivel Yeh</p>
             </div>
             <!-- Controles -->
-            <div class="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-normal">
-              <select id="selector-trimestre" class="px-3 py-2 md:px-4 md:py-2.5 rounded-xl border border-slate-600 text-sm font-medium text-white bg-slate-700 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+            <div class="header-controls w-full sm:w-auto">
+              <select id="selector-trimestre" class="top-select">
                 <option value="I">Trim. I</option>
                 <option value="II">Trim. II</option>
                 <option value="III">Trim. III</option>
               </select>
-              <button id="btn-historial" class="px-3 py-2 md:px-4 md:py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium text-sm transition-all border border-slate-600 whitespace-nowrap">
+              <button id="btn-historial" class="top-action top-action--history">
                 Historial
               </button>
-              <button id="btn-maestro" class="px-3 py-2 md:px-4 md:py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium text-sm transition-all border border-slate-600 flex items-center gap-1.5 active:scale-95">
-                <span>👤</span>
-                <span class="hidden md:inline">Docente</span>
+              <button id="btn-maestro" class="top-action top-action--teacher active:scale-95">
+                <span>Docente</span>
               </button>
             </div>
           </div>
@@ -182,7 +235,7 @@
     <div id="modal-historial" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
       <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-[fadeIn_0.3s_ease]">
         <div class="p-5 border-b border-slate-700 flex justify-between items-center">
-          <h3 class="text-lg font-semibold text-white">Historial</h3>
+          <h3 class="text-lg font-semibold text-neutral-900">Historial</h3>
           <button id="cerrar-historial" class="p-2 hover:bg-slate-700 rounded-xl text-slate-400">✕</button>
         </div>
         <div class="p-5 space-y-4 overflow-y-auto flex-1">
@@ -536,7 +589,7 @@
         a.className = 'link-card link-card-historial flex items-center gap-3 p-4 rounded-2xl bg-slate-700/60 border border-slate-600/80 border-l-4 border-l-primary min-h-[64px]';
         a.innerHTML = `
           <div class="flex-1 min-w-0">
-            <p class="font-semibold text-white text-base leading-snug">${escapeHtml(link.title)}</p>
+            <p class="font-semibold text-neutral-900 text-base leading-snug">${escapeHtml(link.title)}</p>
             <p class="text-sm text-slate-400 mt-0.5 leading-snug">${escapeHtml(link.subtitle || '')}</p>
           </div>
           <span class="text-slate-500 text-lg flex-shrink-0">→</span>
