@@ -10,10 +10,10 @@
       theme: {
         extend: {
           colors: {
-            primary: '#118C7E',
-            ciencias: '#118C7E',
-            matematicas: '#DD5A45',
-            otros: '#C58A12',
+            primary: '#0B7A75',
+            ciencias: '#0B7A75',
+            matematicas: '#D85A43',
+            otros: '#B57913',
           }
         }
       }
@@ -22,28 +22,32 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #17324D;
+      --ink: #183B56;
       --navy: #FFFFFF;
       --surface: #FFFFFF;
-      --border: #CADBE5;
-      --muted: #5D7185;
-      --science: #118C7E;
-      --math: #DD5A45;
-      --general: #C58A12;
+      --canvas: #F4F8F8;
+      --border: #C8DDE1;
+      --muted: #607586;
+      --science: #0B7A75;
+      --science-soft: #E7F4F2;
+      --math: #D85A43;
+      --math-soft: #FDEDEA;
+      --general: #B57913;
+      --general-soft: #FFF5DE;
     }
     html, body { overflow-x: hidden; }
-    body { font-family: 'DM Sans', sans-serif; background: #F1F7F8; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--canvas); }
     .link-card { min-width: 0; overflow: hidden; transition: all 0.2s ease; }
     .link-card p { overflow-wrap: anywhere; }
     .link-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     .link-card:active { transform: scale(0.98); }
-    .link-card-otros:hover { background: #FFF7E2 !important; }
-    .link-card-ciencias:hover, .link-card-historial:hover { background: #E6F6F2 !important; }
-    .link-card-matematicas:hover { background: #FFF0EC !important; }
-    .bg-slate-900 { background-color: #EAF2F7 !important; }
+    .link-card-otros:hover { background: var(--general-soft) !important; }
+    .link-card-ciencias:hover, .link-card-historial:hover { background: var(--science-soft) !important; }
+    .link-card-matematicas:hover { background: var(--math-soft) !important; }
+    .bg-slate-900 { background-color: var(--canvas) !important; }
     .bg-slate-800 { background-color: var(--navy) !important; }
     .bg-slate-700, .bg-slate-700\/60 { background-color: var(--surface) !important; }
-    .hover\:bg-slate-600:hover { background-color: #E0EBF1 !important; }
+    .hover\:bg-slate-600:hover { background-color: #E4EFF0 !important; }
     .border-slate-700, .border-slate-700\/80, .border-slate-600, .border-slate-600\/80 { border-color: var(--border) !important; }
     .text-slate-400 { color: var(--muted) !important; }
     .text-slate-500 { color: #72869A !important; }
@@ -56,35 +60,35 @@
     .bg-amber-400 { background-color: var(--general) !important; }
     .text-amber-400 { color: var(--general) !important; }
     .border-l-amber-500 { border-left-color: var(--general) !important; }
-    body.bg-gradient-to-b { background: #F1F7F8 !important; background-image: none !important; }
+    body.bg-gradient-to-b { background: var(--canvas) !important; background-image: none !important; }
     #vista-alumno { color: var(--ink); }
-    #vista-alumno header { background: rgba(255,255,255,0.96) !important; border-color: #C7DDE4 !important; }
+    #vista-alumno header { background: rgba(255,255,255,0.96) !important; border-color: var(--border) !important; }
     #vista-alumno .text-white, #vista-alumno .text-slate-200, #vista-alumno .text-slate-300 { color: var(--ink) !important; }
     #vista-alumno .bg-slate-700 { background-color: #FFFFFF !important; }
-    #vista-alumno .link-card { background: #FFFFFF !important; border-color: #C7DDE4 !important; box-shadow: 0 4px 12px rgba(23,50,77,0.06); }
-    #vista-alumno .link-card:hover { box-shadow: 0 10px 24px rgba(23,50,77,0.12); }
+    #vista-alumno .link-card { background: #FFFFFF !important; border-color: var(--border) !important; box-shadow: 0 4px 12px rgba(24,59,86,0.06); }
+    #vista-alumno .link-card:hover { box-shadow: 0 10px 24px rgba(24,59,86,0.12); }
     #vista-alumno .link-card .text-white { color: var(--ink) !important; }
     #vista-alumno .link-card .text-slate-400 { color: var(--muted) !important; }
     #vista-alumno .link-card .text-slate-500 { color: #91A4B3 !important; }
     #vista-alumno .border-l-cyan-400 { border-left-color: var(--science) !important; }
     #vista-alumno .border-l-pink-400 { border-left-color: var(--math) !important; }
     #vista-alumno .border-l-amber-500 { border-left-color: var(--general) !important; }
-    #vista-maestro { background: #EAF2F7 !important; }
+    #vista-maestro { background: var(--canvas) !important; }
     #vista-maestro .bg-white { background-color: #FFFFFF !important; }
-    #vista-maestro .border-neutral-100, #vista-maestro .border-neutral-200 { border-color: #C7DDE4 !important; }
+    #vista-maestro .border-neutral-100, #vista-maestro .border-neutral-200 { border-color: var(--border) !important; }
     #vista-maestro .text-neutral-900 { color: var(--ink) !important; }
     #vista-maestro .text-neutral-500 { color: #527287 !important; }
     #vista-maestro .bg-neutral-50 { background-color: #F2F8F8 !important; }
     #vista-maestro .hover\:bg-neutral-100:hover, #vista-maestro .hover\:bg-neutral-200:hover { background-color: #DCECEE !important; }
-    #modal-historial > div { background: #FFFFFF !important; border-color: #C7DDE4 !important; }
-    #modal-historial .border-b { border-color: #C7DDE4 !important; }
+    #modal-historial > div { background: #FFFFFF !important; border-color: var(--border) !important; }
+    #modal-historial .border-b { border-color: var(--border) !important; }
     #modal-historial h3 { color: var(--ink) !important; }
-    #modal-historial select { background: #FFFFFF !important; color: var(--ink) !important; border-color: #C7DDE4 !important; }
+    #modal-historial select { background: #FFFFFF !important; color: var(--ink) !important; border-color: var(--border) !important; }
     #modal-historial .text-white { color: var(--ink) !important; }
     #modal-historial .text-slate-400 { color: var(--muted) !important; }
     #modal-historial .text-slate-500 { color: #527287 !important; }
-    #modal-historial .link-card { background: #FFFFFF !important; border-color: #C7DDE4 !important; box-shadow: 0 4px 12px rgba(23,50,77,0.06); }
-    #modal-historial .link-card:hover { box-shadow: 0 10px 24px rgba(23,50,77,0.12); }
+    #modal-historial .link-card { background: #FFFFFF !important; border-color: var(--border) !important; box-shadow: 0 4px 12px rgba(24,59,86,0.06); }
+    #modal-historial .link-card:hover { box-shadow: 0 10px 24px rgba(24,59,86,0.12); }
     .header-controls {
       display: grid;
       grid-template-columns: minmax(8rem, 1fr) auto auto;
@@ -102,9 +106,9 @@
     .top-select {
       width: 100%;
       padding: 0.625rem 0.875rem;
-      background: #E6F4F1 !important;
+      background: var(--science-soft) !important;
       color: var(--ink) !important;
-      border: 1px solid #A9D8CF !important;
+      border: 1px solid #A8D3CE !important;
     }
     .top-action {
       display: inline-flex;
@@ -114,24 +118,24 @@
       padding: 0.625rem 1rem;
       color: #FFFFFF !important;
       border: 1px solid transparent !important;
-      box-shadow: 0 4px 10px rgba(23,50,77,0.1);
+      box-shadow: 0 4px 10px rgba(24,59,86,0.1);
       white-space: nowrap;
     }
-    .top-action:hover { transform: translateY(-1px); box-shadow: 0 7px 16px rgba(23,50,77,0.16); }
+    .top-action:hover { transform: translateY(-1px); box-shadow: 0 7px 16px rgba(24,59,86,0.16); }
     .top-action:active { transform: translateY(0); }
     .top-action:focus-visible,
-    .top-select:focus-visible { outline: 3px solid rgba(17,140,126,0.3); outline-offset: 2px; }
+    .top-select:focus-visible { outline: 3px solid rgba(11,122,117,0.3); outline-offset: 2px; }
     .top-action--history { background: var(--science) !important; }
-    .top-action--history:hover { background: #0B7469 !important; }
+    .top-action--history:hover { background: #086660 !important; }
     .top-action--teacher { background: var(--math) !important; }
-    .top-action--teacher:hover { background: #B94332 !important; }
+    .top-action--teacher:hover { background: #B54835 !important; }
     @media (max-width: 640px) {
       .header-controls { grid-template-columns: 1fr 1fr; width: 100%; }
       .top-select { grid-column: 1 / -1; }
       .top-action { width: 100%; padding-inline: 0.75rem; }
     }
     #splash-bienvenida {
-      background: linear-gradient(135deg, #17324D 0%, #234A68 100%);
+      background: linear-gradient(135deg, #183B56 0%, #24566B 100%);
       transition: opacity 0.35s ease, visibility 0.35s ease;
     }
     #splash-bienvenida.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -142,7 +146,7 @@
     }
     .splash-stripe { height: 0.4rem; }
     .dragging { opacity: 0.5; }
-    .drag-over { border-color: var(--science); background: rgba(46,196,182,0.15); }
+    .drag-over { border-color: var(--science); background: var(--science-soft); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     @media (min-width: 768px) {
       .section-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; align-items: start; }
@@ -150,23 +154,23 @@
     }
   </style>
 </head>
-<body class="min-h-screen" style="background: #EAF2F7;">
+<body class="min-h-screen" style="background: var(--canvas);">
   <section id="splash-bienvenida" class="fixed inset-0 z-[100] flex items-center justify-center p-5" role="dialog" aria-modal="true" aria-labelledby="splash-titulo">
     <div class="splash-panel overflow-hidden rounded-lg bg-white text-center">
       <div class="flex" aria-hidden="true">
-        <span class="splash-stripe flex-1" style="background: #C58A12;"></span>
-        <span class="splash-stripe flex-1" style="background: #118C7E;"></span>
-        <span class="splash-stripe flex-1" style="background: #DD5A45;"></span>
+        <span class="splash-stripe flex-1" style="background: var(--general);"></span>
+        <span class="splash-stripe flex-1" style="background: var(--science);"></span>
+        <span class="splash-stripe flex-1" style="background: var(--math);"></span>
       </div>
       <div class="px-6 py-10 sm:px-12">
-        <p class="text-xs font-bold uppercase tracking-widest" style="color: #118C7E;">Links Central</p>
-        <h2 id="splash-titulo" class="mt-4 text-3xl font-bold sm:text-4xl" style="color: #17324D;">Bienvenidos</h2>
-        <p class="mt-3 text-lg font-medium" style="color: #5D7185;">Nuevo ciclo escolar</p>
-        <p class="mt-1 text-2xl font-bold" style="color: #DD5A45;">2026-2027</p>
-        <p class="mt-4 text-sm font-semibold" style="color: #17324D;">Prof. Daniel Esquivel Yeh</p>
+        <p class="text-xs font-bold uppercase tracking-widest" style="color: var(--science);">Links Central</p>
+        <h2 id="splash-titulo" class="mt-4 text-3xl font-bold sm:text-4xl" style="color: var(--ink);">Bienvenidos</h2>
+        <p class="mt-3 text-lg font-medium" style="color: var(--muted);">Nuevo ciclo escolar</p>
+        <p class="mt-1 text-2xl font-bold" style="color: var(--math);">2026-2027</p>
+        <p class="mt-4 text-sm font-semibold" style="color: var(--ink);">Prof. Daniel Esquivel Yeh</p>
         <div class="mx-auto my-7 h-px w-16" style="background: #CADBE5;"></div>
-        <p class="mx-auto max-w-md text-sm leading-relaxed" style="color: #5D7185;">Este fin de semana es de exámenes diagnósticos en linea, no olvides presentar el tuyo</p>
-        <button id="btn-entrar-sitio" class="mt-8 px-7 py-3 text-sm font-bold text-white transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2" style="background: #17324D; border-radius: 0.5rem;" autofocus>
+        <p class="mx-auto max-w-md text-sm leading-relaxed" style="color: var(--muted);">Este fin de semana es de exámenes diagnósticos en linea, no olvides presentar el tuyo</p>
+        <button id="btn-entrar-sitio" class="mt-8 px-7 py-3 text-sm font-bold text-white transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2" style="background: var(--ink); border-radius: 0.5rem;" autofocus>
           Entrar
         </button>
       </div>
@@ -176,13 +180,13 @@
     <!-- Vista Alumno -->
     <div id="vista-alumno" class="pb-12">
       <!-- Header -->
-      <header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background: rgba(255,255,255,0.96); border-color: #C7DDE4;">
+      <header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background: rgba(255,255,255,0.96); border-color: var(--border);">
         <div class="max-w-6xl mx-auto px-4 md:px-8 py-4">
           <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <!-- Título -->
             <div class="w-full min-w-0 sm:flex-1">
-              <h1 class="text-lg md:text-2xl font-bold tracking-tight" style="color: #17324D;">Links Central</h1>
-              <p class="text-xs md:text-sm" style="color: #5D7185;">Prof. Daniel Esquivel Yeh</p>
+              <h1 class="text-lg md:text-2xl font-bold tracking-tight" style="color: var(--ink);">Links Central</h1>
+              <p class="text-xs md:text-sm" style="color: var(--muted);">Prof. Daniel Esquivel Yeh</p>
             </div>
             <!-- Controles -->
             <div class="header-controls w-full sm:w-auto">
@@ -542,13 +546,13 @@
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           a.className = `link-card ${hoverClass} flex items-center gap-3 p-4 rounded-2xl border ${borderColor} min-h-[64px]`;
-          a.style.cssText = 'background: #FFFFFF; border-color: #C7DDE4; box-shadow: 0 4px 12px rgba(23,50,77,0.06);';
+          a.style.cssText = 'background: #FFFFFF; border-color: var(--border); box-shadow: 0 4px 12px rgba(24,59,86,0.06);';
           a.innerHTML = `
             <div class="flex-1 min-w-0">
-              <p class="font-semibold text-base leading-snug" style="color: #17324D;">${escapeHtml(link.title)}</p>
-              ${link.subtitle ? `<p class="text-sm mt-0.5 leading-snug" style="color: #5D7185;">${escapeHtml(link.subtitle)}</p>` : ''}
+              <p class="font-semibold text-base leading-snug" style="color: var(--ink);">${escapeHtml(link.title)}</p>
+              ${link.subtitle ? `<p class="text-sm mt-0.5 leading-snug" style="color: var(--muted);">${escapeHtml(link.subtitle)}</p>` : ''}
             </div>
-            <span class="text-lg flex-shrink-0" style="color: #7890A1;">→</span>
+            <span class="text-lg flex-shrink-0" style="color: #718999;">→</span>
           `;
           container.appendChild(a);
         });
