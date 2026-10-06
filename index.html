@@ -172,7 +172,7 @@
   </style>
 </head>
 <body class="min-h-screen" style="background: var(--canvas);">
-  <section id="splash-bienvenida" class="fixed inset-0 z-[100] flex items-center justify-center p-5" role="dialog" aria-modal="true" aria-labelledby="splash-titulo">
+  <section id="splash-bienvenida" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-5" role="dialog" aria-modal="true" aria-labelledby="splash-titulo">
     <div class="splash-panel overflow-hidden rounded-lg bg-white text-center">
       <div class="flex" aria-hidden="true">
         <span class="splash-stripe flex-1" style="background: var(--general);"></span>
@@ -438,7 +438,7 @@
     let links = [];
     let settings = {
       defaultTrimestre: 'II',
-      splashEnabled: true,
+      splashEnabled: false,
       splashMessage: 'Este fin de semana es de exámenes diagnósticos en linea, no olvides presentar el tuyo'
     };
     let isSaving = false;
@@ -470,7 +470,7 @@
       }));
       if (settingsRes.data) {
         settings.defaultTrimestre = settingsRes.data.default_trimestre || 'II';
-        settings.splashEnabled = settingsRes.data.splash_enabled !== false;
+        settings.splashEnabled = settingsRes.data.splash_enabled === true;
         settings.splashMessage = settingsRes.data.splash_message || settings.splashMessage;
       }
     }
@@ -502,15 +502,19 @@
         splash_enabled: settings.splashEnabled,
         splash_message: settings.splashMessage
       });
-      if (error) { showToast('Error al guardar ajuste', true); console.error(error); }
+      if (error) {
+        showToast('Error al guardar ajuste', true);
+        console.error(error);
+        return false;
+      }
+      return true;
     }
 
     function renderSplash() {
       const splash = document.getElementById('splash-bienvenida');
-      if (!settings.splashEnabled) {
-        splash.remove();
-        return;
-      }
+      if (!splash) return;
+      splash.classList.toggle('hidden', !settings.splashEnabled);
+      if (!settings.splashEnabled) return;
       document.querySelector('#splash-bienvenida p:last-of-type').textContent = settings.splashMessage;
     }
 
@@ -922,18 +926,18 @@
 
       document.getElementById('default-trimestre').addEventListener('change', async () => {
         settings.defaultTrimestre = document.getElementById('default-trimestre').value;
-        await saveSetting();
+        const saved = await saveSetting();
         document.getElementById('selector-trimestre').value = settings.defaultTrimestre;
         document.getElementById('form-trimestre').value = settings.defaultTrimestre;
         renderVistaAlumno();
-        showToast('Trimestre por defecto guardado');
+        if (saved) showToast('Trimestre por defecto guardado');
       });
 
       document.getElementById('btn-guardar-splash').addEventListener('click', async () => {
         settings.splashEnabled = document.getElementById('splash-activo').checked;
         settings.splashMessage = document.getElementById('splash-mensaje').value.trim() || 'Bienvenidos';
-        await saveSetting();
-        showToast('Splash guardado');
+        const saved = await saveSetting();
+        if (saved) showToast('Splash guardado');
       });
 
       document.getElementById('maestro-filtro').addEventListener('change', () => {
